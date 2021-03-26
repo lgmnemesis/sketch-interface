@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { StrictMode } from 'react'
+import ReactDOM from 'react-dom'
+import 'inter-ui'
+import { HashRouter } from 'react-router-dom'
+import App from './pages/App'
+import { NetworkContextName } from './constants'
+import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+import getLibrary from './utils/getLibrary'
+import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
+import { UserGlobalStateProvider } from './context/User'
+
+const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+
+if (!!window.ethereum) {
+  window.ethereum.autoRefreshOnNetworkChange = false
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  <StrictMode>
+    <FixedGlobalStyle />
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <UserGlobalStateProvider>
+          <ThemeProvider>
+            <ThemedGlobalStyle />
+            <HashRouter>
+              <App />
+            </HashRouter>
+          </ThemeProvider>
+        </UserGlobalStateProvider>
+      </Web3ProviderNetwork>
+    </Web3ReactProvider>
+  </StrictMode>,
+  document.getElementById('root'),
+)
