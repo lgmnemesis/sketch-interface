@@ -7,7 +7,8 @@ import { NetworkContextName } from './constants'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import getLibrary from './utils/getLibrary'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
-import { UserGlobalStateProvider } from './context/User'
+import { GlobalStateProvider } from './state/global'
+import GlobalStateUpdater from './state/global/stateUpdater'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -15,19 +16,28 @@ if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
+function Updaters() {
+  return (
+    <>
+      <GlobalStateUpdater />
+    </>
+  )
+}
+
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        <UserGlobalStateProvider>
+        <GlobalStateProvider>
+          <Updaters />
           <ThemeProvider>
             <ThemedGlobalStyle />
             <HashRouter>
               <App />
             </HashRouter>
           </ThemeProvider>
-        </UserGlobalStateProvider>
+        </GlobalStateProvider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
   </StrictMode>,

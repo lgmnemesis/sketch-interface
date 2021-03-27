@@ -9,6 +9,7 @@ import {
 } from '../connectors'
 
 export const NetworkContextName = 'NETWORK'
+export const PERSIST_IS_DARK_MODE = 'darkmode'
 
 export interface WalletInfo {
   connector?: AbstractConnector

@@ -1,7 +1,7 @@
-import { useUserGlobalState } from '../../context/User'
+import { useGlobalState } from '../../state/global'
 
 export function useIsDarkMode() {
-  const { state, setState } = useUserGlobalState()
+  const { state, setState } = useGlobalState()
 
   const toggleDarkMode = () => {
     setState((current) => ({ isDarkMode: !current.isDarkMode }))
