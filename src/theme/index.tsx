@@ -160,6 +160,26 @@ body {
   }
   min-height: 100vh;
 }
+
+.basic-popover .popover-content {
+  background: ${({ theme }) => theme.bg3};
+  border-radius: 10px;
+  padding: 5px;
+  width: initial;
+  min-height: 200px;
+}
+
+.menu-popover .popover-content {
+  top: 70px !important;
+}
+
+${({ theme }) => theme.mediaWidth.upToMedium`
+  .menu-popover .popover-content {
+    top: unset !important;
+    bottom: 70px;
+  }
+`}
+
 `
 
 export const TYPE = {

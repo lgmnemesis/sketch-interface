@@ -5,6 +5,8 @@ import Logo from '../../assets/images/logo.png'
 import { NavLink } from 'react-router-dom'
 import { darken } from 'polished'
 import { useIsDarkMode } from '../../hooks/User'
+import Menu from '../Menu'
+import { StyledMenuButton } from '../Button'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -137,33 +139,9 @@ const StyledNavLink = styled(NavLink).attrs({
   }
 `
 
-export const StyledMenuButton = styled.button`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
-  height: 35px;
-  background-color: ${({ theme }) => theme.bg3};
-  margin-left: 8px;
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.5rem;
-
-  :hover,
-  :focus {
-    cursor: pointer;
-    outline: none;
-    background-color: ${({ theme }) => theme.bg4};
-  }
-
-  svg {
-    margin-top: 2px;
-  }
-  > * {
-    stroke: ${({ theme }) => theme.text1};
-  }
+const HeaderElementWrap = styled.div`
+  display: flex;
+  align-items: center;
 `
 
 export default function Header() {
@@ -188,9 +166,12 @@ export default function Header() {
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
-          <StyledMenuButton onClick={() => toggleDarkMode()}>
-            {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
-          </StyledMenuButton>
+          <HeaderElementWrap>
+            <StyledMenuButton onClick={() => toggleDarkMode()}>
+              {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
+            </StyledMenuButton>
+            <Menu />
+          </HeaderElementWrap>
         </HeaderElement>
       </HeaderControls>
     </HeaderFrame>
