@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IonModal } from '@ionic/react'
 import { useWalletModalToggle } from '../../hooks/Application'
 import styled from 'styled-components'
@@ -11,6 +11,9 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import Option from './Option'
 import MetamaskIcon from '../../assets/images/metamask.png'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import PendingView from './PendingView'
+import { ExternalLink } from '../Link'
+import AccountDetails from '../AccountDetails'
 
 const ContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg2};
@@ -70,6 +73,24 @@ const HeaderRow = styled.div`
   `};
 `
 
+const Blurb = styled.div`
+  ${({ theme }) => theme.flexRowNoWrap}
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    margin: 1rem;
+    font-size: 12px;
+  `};
+`
+
+const HoverText = styled.div`
+  :hover {
+    cursor: pointer;
+  }
+`
+
 const WALLET_VIEWS = {
   OPTIONS: 'options',
   OPTIONS_SECONDARY: 'options_secondary',
@@ -81,7 +102,6 @@ const maybeDefault = (module: any) => {
   if (typeof module === 'object') {
     module = module.default
   }
-
   return module
 }
 
@@ -89,8 +109,38 @@ const WalletModalInternal = () => {
   const { isOpenWalletModal, toggleWalletModal } = useWalletModalToggle()
   const { active, account, connector, activate, error } = useWeb3React()
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
+  const [pendingWallet, setPendingWallet] = useState<
+    AbstractConnector | undefined
+  >()
+  const [pendingError, setPendingError] = useState<boolean>()
+
+  // close on connection, when logged out before
+  // useEffect(() => {
+  //   if (account && isOpenWalletModal) {
+  //     toggleWalletModal()
+  //   }
+  // }, [account, toggleWalletModal, isOpenWalletModal])
+
+  // always reset to account view
+  useEffect(() => {
+    if (isOpenWalletModal) {
+      setPendingError(false)
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+      console.log('moshe1:', account, walletView === WALLET_VIEWS.ACCOUNT)
+    }
+  }, [isOpenWalletModal])
+
+  // close modal when a connection is successful
+  useEffect(() => {
+    if (isOpenWalletModal && (active || (connector && !error))) {
+      setWalletView(WALLET_VIEWS.ACCOUNT)
+    }
+  }, [setWalletView, active, error, connector, isOpenWalletModal])
 
   const tryActivation = async (connector: AbstractConnector | undefined) => {
+    setPendingWallet(connector) // set wallet for pending view
+    setWalletView(WALLET_VIEWS.PENDING)
+
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
     if (
       connector instanceof WalletConnectConnector &&
@@ -104,7 +154,7 @@ const WalletModalInternal = () => {
         if (error instanceof UnsupportedChainIdError) {
           activate(connector) // a little janky...can't use setError because the connector isn't set
         } else {
-          // setPendingError(true)
+          setPendingError(true)
         }
       })
   }
@@ -164,10 +214,12 @@ const WalletModalInternal = () => {
             return null //dont want to return install twice
           }
         }
+
         // don't return metamask if injected provider isn't metamask
         else if (option.name === 'MetaMask' && !isMetamask) {
           return null
         }
+
         // likewise for generic
         else if (option.name === 'Injected' && isMetamask) {
           return null
@@ -200,6 +252,82 @@ const WalletModalInternal = () => {
     })
   }
 
+  const getModalContent = () => {
+    if (error) {
+      return (
+        <ModalHeader>
+          <CloseIcon onClick={toggleWalletModal}>
+            <CloseColor />
+          </CloseIcon>
+          <HeaderRow>
+            {error instanceof UnsupportedChainIdError
+              ? 'Wrong Network'
+              : 'Error connecting'}
+          </HeaderRow>
+          <ContentWrapper>
+            {error instanceof UnsupportedChainIdError ? (
+              <h5>Please connect to the appropriate Ethereum network.</h5>
+            ) : (
+              'Error connecting. Try refreshing the page.'
+            )}
+          </ContentWrapper>
+        </ModalHeader>
+      )
+    }
+
+    if (account && walletView === WALLET_VIEWS.ACCOUNT) {
+      return (
+        <AccountDetails
+          toggleWalletModal={toggleWalletModal}
+          openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+        />
+      )
+    }
+
+    return (
+      <>
+        <ModalHeader>
+          <CloseIcon onClick={toggleWalletModal}>
+            <CloseColor />
+          </CloseIcon>
+          {walletView !== WALLET_VIEWS.ACCOUNT ? (
+            <HeaderRow
+              color="blue"
+              onClick={() => {
+                setPendingError(false)
+                setWalletView(WALLET_VIEWS.ACCOUNT)
+              }}
+            >
+              <HoverText>Back</HoverText>
+            </HeaderRow>
+          ) : (
+            <HeaderRow>Connect to a wallet</HeaderRow>
+          )}
+        </ModalHeader>
+        <ContentWrapper>
+          {walletView === WALLET_VIEWS.PENDING ? (
+            <PendingView
+              connector={pendingWallet}
+              error={pendingError}
+              setPendingError={setPendingError}
+              tryActivation={tryActivation}
+            />
+          ) : (
+            <OptionGrid>{getOptions()}</OptionGrid>
+          )}
+          {walletView !== WALLET_VIEWS.PENDING && (
+            <Blurb>
+              <span>New to Ethereum? &nbsp;</span>{' '}
+              <ExternalLink href="https://ethereum.org/wallets/">
+                Learn more about wallets
+              </ExternalLink>
+            </Blurb>
+          )}
+        </ContentWrapper>
+      </>
+    )
+  }
+
   return (
     <ModalWrapper
       mode="ios"
@@ -207,23 +335,11 @@ const WalletModalInternal = () => {
       isOpen={isOpenWalletModal === undefined ? false : isOpenWalletModal}
       onDidDismiss={isOpenWalletModal ? toggleWalletModal : () => {}}
     >
-      <ModalHeader>
-        <CloseIcon onClick={toggleWalletModal}>
-          <CloseColor />
-        </CloseIcon>
-        <HeaderRow>Connect to a wallet</HeaderRow>
-      </ModalHeader>
-      <ContentWrapper>
-        <OptionGrid>{getOptions()}</OptionGrid>
-      </ContentWrapper>
+      {getModalContent()}
     </ModalWrapper>
   )
 }
 
 export default function WalletModal() {
-  return (
-    <>
-      <WalletModalInternal />
-    </>
-  )
+  return <WalletModalInternal />
 }

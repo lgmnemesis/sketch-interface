@@ -33,7 +33,7 @@ export const walletlink = new WalletLinkConnector({
 
 export const fortmatic = new FortmaticConnector({
   apiKey: process.env.FORTMATIC_API_KEY as string,
-  chainId: 4,
+  chainId: NETWORK_CHAIN_ID,
 })
 
 export const portis = new PortisConnector({

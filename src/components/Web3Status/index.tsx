@@ -6,6 +6,8 @@ import { darken, lighten } from 'polished'
 import { ButtonSecondary } from '../Button'
 import { useWalletModalToggle } from '../../hooks/Application'
 import WalletModal from '../WalletModal'
+import { shortenAddress } from '../../utils'
+import { StatusIcon } from '../Web3StatusIcon'
 
 const Text = styled.p`
   flex: 1 1 auto;
@@ -101,11 +103,17 @@ function Web3StatusInner() {
 
   if (account) {
     return (
-      <Web3StatusConnected id="web3-status-connected"></Web3StatusConnected>
+      <Web3StatusConnected
+        id="web3-status-connected"
+        onClick={() => toggleWalletModal()}
+      >
+        <Text>{shortenAddress(account)}</Text>
+        {connector && <StatusIcon connector={connector} />}
+      </Web3StatusConnected>
     )
   } else if (error) {
     return (
-      <Web3StatusError>
+      <Web3StatusError onClick={() => toggleWalletModal()}>
         <NetworkIcon />
         <Text>
           {error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error'}
