@@ -3,9 +3,12 @@ import { useActiveWeb3React } from '../../hooks'
 import styled from 'styled-components'
 import { injected, walletlink } from '../../connectors'
 import { ButtonSecondary } from '../Button'
-import { X } from 'react-feather'
+import { X, ExternalLink as LinkIcon } from 'react-feather'
 import { shortenAddress } from '../../utils'
 import { StatusIcon } from '../Web3StatusIcon'
+import Copy from './Copy'
+import { getEtherscanLink } from '../../utils'
+import { ExternalLink } from '../Link'
 
 const WalletName = styled.div`
   width: initial;
@@ -142,6 +145,17 @@ const Spacing = styled.span`
   margin: 0 5px;
 `
 
+const AddressLink = styled(ExternalLink)`
+  font-size: 0.825rem;
+  color: ${({ theme }) => theme.text3};
+  margin-left: 1rem;
+  font-size: 0.825rem;
+  display: flex;
+  :hover {
+    color: ${({ theme }) => theme.text2};
+  }
+`
+
 interface AccountDetailsProps {
   toggleWalletModal: () => void
   openOptions: () => void
@@ -215,15 +229,13 @@ export default function AccountDetails({
               <>
                 <AccountControl>
                   <div>
-                    {/* {account && (
+                    {account && (
                       <Copy toCopy={account}>
                         <span style={{ marginLeft: '4px' }}>Copy Address</span>
                       </Copy>
                     )}
                     {chainId && account && (
                       <AddressLink
-                        hasENS={!!ENSName}
-                        isENS={false}
                         href={getEtherscanLink(chainId, account, 'address')}
                       >
                         <LinkIcon size={16} />
@@ -231,7 +243,7 @@ export default function AccountDetails({
                           View on Etherscan
                         </span>
                       </AddressLink>
-                    )} */}
+                    )}
                   </div>
                 </AccountControl>
               </>

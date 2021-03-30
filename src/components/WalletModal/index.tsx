@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { X } from 'react-feather'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { isMobile } from 'react-device-detect'
-import { fortmatic, injected, portis } from '../../connectors'
+import { injected, portis } from '../../connectors'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import Option from './Option'
@@ -126,7 +126,6 @@ const WalletModalInternal = () => {
     if (isOpenWalletModal) {
       setPendingError(false)
       setWalletView(WALLET_VIEWS.ACCOUNT)
-      console.log('moshe1:', account, walletView === WALLET_VIEWS.ACCOUNT)
     }
   }, [isOpenWalletModal])
 
