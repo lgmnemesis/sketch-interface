@@ -7,6 +7,8 @@ import { darken } from 'polished'
 import { useIsDarkMode } from '../../hooks/User'
 import Menu from '../Menu'
 import { StyledMenuButton } from '../Button'
+import Web3Status from '../Web3Status'
+import { useActiveWeb3React } from '../../hooks'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -139,6 +141,21 @@ const StyledNavLink = styled(NavLink).attrs({
   }
 `
 
+const AccountElement = styled.div<{ active: boolean }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: ${({ theme, active }) => (!active ? theme.bg1 : theme.bg3)};
+  border-radius: 12px;
+  white-space: nowrap;
+  width: 100%;
+  cursor: pointer;
+
+  :focus {
+    border: 1px solid blue;
+  }
+`
+
 const HeaderElementWrap = styled.div`
   display: flex;
   align-items: center;
@@ -146,6 +163,7 @@ const HeaderElementWrap = styled.div`
 
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useIsDarkMode()
+  const { account } = useActiveWeb3React()
 
   return (
     <HeaderFrame>
@@ -166,13 +184,16 @@ export default function Header() {
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
-          <HeaderElementWrap>
-            <StyledMenuButton onClick={() => toggleDarkMode()}>
-              {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
-            </StyledMenuButton>
-            <Menu />
-          </HeaderElementWrap>
+          <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+            <Web3Status />
+          </AccountElement>
         </HeaderElement>
+        <HeaderElementWrap>
+          <StyledMenuButton onClick={() => toggleDarkMode()}>
+            {isDarkMode ? <Moon size={20} /> : <Sun size={20} />}
+          </StyledMenuButton>
+          <Menu />
+        </HeaderElementWrap>
       </HeaderControls>
     </HeaderFrame>
   )

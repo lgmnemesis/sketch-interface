@@ -9,6 +9,7 @@ import {
 
 export interface GlobalStateInterface {
   isDarkMode: boolean
+  isOpenWalletModal: boolean
 }
 
 const GlobalStateContext = createContext({
