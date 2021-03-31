@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Moon, Sun } from 'react-feather'
+import { Moon, Sun, Activity, Link, Link2 } from 'react-feather'
 import Row, { RowFixed } from '../Row'
 import Logo from '../../assets/images/logo.png'
 import { NavLink } from 'react-router-dom'
@@ -123,7 +123,7 @@ const StyledNavLink = styled(NavLink).attrs({
   activeClassName,
 })`
   ${({ theme }) => theme.flexRowNoWrap}
-  align-items: left;
+  align-items: center;
   border-radius: 3rem;
   outline: none;
   cursor: pointer;
@@ -132,6 +132,9 @@ const StyledNavLink = styled(NavLink).attrs({
   font-size: 1rem;
   width: fit-content;
   margin: 0 12px;
+  min-height: 30px;
+  min-width: 30px;
+  justify-content: center;
 
   &.${activeClassName} {
     border-radius: 12px;
@@ -170,6 +173,12 @@ const BalanceText = styled(Text)`
   `};
 `
 
+const HideExtraSmall = styled.span`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `};
+`
+
 const HideSmall = styled.span`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
@@ -189,6 +198,10 @@ const NetworkCard = styled(YellowCard)`
   `};
 `
 
+const SpaceX = styled.span`
+  padding: 0 2px;
+`
+
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useIsDarkMode()
   const { account, chainId } = useActiveWeb3React()
@@ -203,11 +216,20 @@ export default function Header() {
           </RotateIcon>
         </Title>
         <HeaderLinks>
-          <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-            Swap
+          <StyledNavLink id={`tab1-nav-link`} to={'/swap'}>
+            <Activity />
+            <SpaceX />
+            <HideExtraSmall>Link1</HideExtraSmall>
           </StyledNavLink>
-          <StyledNavLink id={`library-nav-link`} to={'/swap2'}>
-            Library
+          <StyledNavLink id={`tab2-nav-link`} to={'/link2'}>
+            <Link2 />
+            <SpaceX />
+            <HideExtraSmall>Link2</HideExtraSmall>
+          </StyledNavLink>
+          <StyledNavLink id={`tab3-nav-link`} to={'/link3'}>
+            <Link />
+            <SpaceX />
+            <HideExtraSmall>Link3</HideExtraSmall>
           </StyledNavLink>
         </HeaderLinks>
       </HeaderRow>
