@@ -2,7 +2,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import {
   fortmatic,
   injected,
-  network,
   portis,
   walletconnect,
   walletlink,
@@ -24,15 +23,6 @@ export interface WalletInfo {
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
-  NETWORK: {
-    connector: network,
-    name: 'Network',
-    iconName: 'arrow-right.svg',
-    description: 'Injected web3 provider.',
-    href: null,
-    color: '#010101',
-    primary: true,
-  },
   INJECTED: {
     connector: injected,
     name: 'Injected',

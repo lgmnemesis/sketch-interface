@@ -14,6 +14,7 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import PendingView from './PendingView'
 import { ExternalLink } from '../Link'
 import AccountDetails from '../AccountDetails'
+import usePrevious from '../../hooks/usePrevious'
 
 const ContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg2};
@@ -106,20 +107,22 @@ const maybeDefault = (module: any) => {
 }
 
 const WalletModalInternal = () => {
-  const { isOpenWalletModal, toggleWalletModal } = useWalletModalToggle()
   const { active, account, connector, activate, error } = useWeb3React()
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
   const [pendingWallet, setPendingWallet] = useState<
     AbstractConnector | undefined
   >()
   const [pendingError, setPendingError] = useState<boolean>()
+  const { isOpenWalletModal, toggleWalletModal } = useWalletModalToggle()
+
+  const previousAccount = usePrevious(account)
 
   // close on connection, when logged out before
-  // useEffect(() => {
-  //   if (account && isOpenWalletModal) {
-  //     toggleWalletModal()
-  //   }
-  // }, [account, toggleWalletModal, isOpenWalletModal])
+  useEffect(() => {
+    if (account && !previousAccount && isOpenWalletModal) {
+      toggleWalletModal()
+    }
+  }, [account, previousAccount, toggleWalletModal, isOpenWalletModal])
 
   // always reset to account view
   useEffect(() => {
@@ -130,11 +133,25 @@ const WalletModalInternal = () => {
   }, [isOpenWalletModal])
 
   // close modal when a connection is successful
+  const activePrevious = usePrevious(active)
+  const connectorPrevious = usePrevious(connector)
   useEffect(() => {
-    if (isOpenWalletModal && (active || (connector && !error))) {
+    if (
+      isOpenWalletModal &&
+      ((active && !activePrevious) ||
+        (connector && connector !== connectorPrevious && !error))
+    ) {
       setWalletView(WALLET_VIEWS.ACCOUNT)
     }
-  }, [setWalletView, active, error, connector, isOpenWalletModal])
+  }, [
+    setWalletView,
+    active,
+    error,
+    connector,
+    isOpenWalletModal,
+    activePrevious,
+    connectorPrevious,
+  ])
 
   const tryActivation = async (connector: AbstractConnector | undefined) => {
     setPendingWallet(connector) // set wallet for pending view
@@ -148,14 +165,17 @@ const WalletModalInternal = () => {
       connector.walletConnectProvider = undefined
     }
 
-    connector &&
-      activate(connector, undefined, true).catch((error) => {
+    if (connector) {
+      try {
+        await activate(connector, undefined, true)
+      } catch (error) {
         if (error instanceof UnsupportedChainIdError) {
           activate(connector) // a little janky...can't use setError because the connector isn't set
         } else {
           setPendingError(true)
         }
-      })
+      }
+    }
   }
 
   const getOptions = () => {

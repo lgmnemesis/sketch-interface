@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ExternalLink } from '../Link'
 
 const InfoCard = styled.button<{ active?: boolean }>`
   background-color: ${({ theme, active }) => (active ? theme.bg3 : theme.bg2)};
@@ -90,10 +91,6 @@ const IconWrapper = styled.div<{ size?: number | null }>`
   `};
 `
 
-const ExternalLink: React.FC = () => {
-  return null
-}
-
 export default function Option({
   link = null,
   clickable = true,
@@ -145,7 +142,7 @@ export default function Option({
     </OptionCardClickable>
   )
   if (link) {
-    return <ExternalLink>{content}</ExternalLink>
+    return <ExternalLink href={link}>{content}</ExternalLink>
   }
 
   return content
