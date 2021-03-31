@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import Swap from './Swap'
+import TemplatePage from './Template'
 import styled from 'styled-components'
 import Header from '../components/Header'
 import Web3ReactManager from '../components/Web3ReactManager'
@@ -52,7 +52,7 @@ export default function App() {
         <BodyWrapper>
           <Web3ReactManager>
             <Switch>
-              <Route exact strict path="/swap" component={Swap} />
+              <Route exact strict path="/tab1" component={TemplatePage} />
             </Switch>
           </Web3ReactManager>
           <Marginer />

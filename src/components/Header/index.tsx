@@ -216,20 +216,20 @@ export default function Header() {
           </RotateIcon>
         </Title>
         <HeaderLinks>
-          <StyledNavLink id={`tab1-nav-link`} to={'/swap'}>
+          <StyledNavLink id={`tab1-nav-link`} to={'/tab1'}>
             <Activity />
             <SpaceX />
-            <HideExtraSmall>Link1</HideExtraSmall>
+            <HideExtraSmall>Tab_1</HideExtraSmall>
           </StyledNavLink>
-          <StyledNavLink id={`tab2-nav-link`} to={'/link2'}>
+          <StyledNavLink id={`tab2-nav-link`} to={'/tab2'}>
             <Link2 />
             <SpaceX />
-            <HideExtraSmall>Link2</HideExtraSmall>
+            <HideExtraSmall>Tab_2</HideExtraSmall>
           </StyledNavLink>
-          <StyledNavLink id={`tab3-nav-link`} to={'/link3'}>
+          <StyledNavLink id={`tab3-nav-link`} to={'/tab3'}>
             <Link />
             <SpaceX />
-            <HideExtraSmall>Link3</HideExtraSmall>
+            <HideExtraSmall>Tab_3</HideExtraSmall>
           </StyledNavLink>
         </HeaderLinks>
       </HeaderRow>
