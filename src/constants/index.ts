@@ -1,5 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import {
+  ChainId,
   fortmatic,
   injected,
   portis,
@@ -20,6 +21,13 @@ export interface WalletInfo {
   primary?: true
   mobile?: true
   mobileOnly?: true
+}
+
+export const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
+  [ChainId.RINKEBY]: 'Rinkeby',
+  [ChainId.ROPSTEN]: 'Ropsten',
+  [ChainId.GÖRLI]: 'Görli',
+  [ChainId.KOVAN]: 'Kovan',
 }
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {

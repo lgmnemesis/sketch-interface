@@ -11,6 +11,8 @@ import Web3Status from '../Web3Status'
 import { useActiveWeb3React } from '../../hooks'
 import { Text } from 'rebass'
 import { useAccountETHBalance } from '../../state/wallet'
+import { YellowCard } from '../Card'
+import { NETWORK_LABELS } from '../../constants'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -169,9 +171,28 @@ const BalanceText = styled(Text)`
   `};
 `
 
+const HideSmall = styled.span`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+`
+
+const NetworkCard = styled(YellowCard)`
+  border-radius: 12px;
+  padding: 8px 12px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0;
+    margin-right: 0.5rem;
+    width: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+  `};
+`
+
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useIsDarkMode()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { balanceFormatStr } = useAccountETHBalance()
 
   return (
@@ -193,6 +214,13 @@ export default function Header() {
       </HeaderRow>
       <HeaderControls>
         <HeaderElement>
+          <HideSmall>
+            {chainId && NETWORK_LABELS[chainId] && (
+              <NetworkCard title={NETWORK_LABELS[chainId]}>
+                {NETWORK_LABELS[chainId]}
+              </NetworkCard>
+            )}
+          </HideSmall>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && balanceFormatStr ? (
               <BalanceText
