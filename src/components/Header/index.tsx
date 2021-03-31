@@ -9,6 +9,8 @@ import Menu from '../Menu'
 import { StyledMenuButton } from '../Button'
 import Web3Status from '../Web3Status'
 import { useActiveWeb3React } from '../../hooks'
+import { Text } from 'rebass'
+import { useAccountETHBalance } from '../../state/wallet'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -161,9 +163,16 @@ const HeaderElementWrap = styled.div`
   align-items: center;
 `
 
+const BalanceText = styled(Text)`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    display: none;
+  `};
+`
+
 export default function Header() {
   const { isDarkMode, toggleDarkMode } = useIsDarkMode()
   const { account } = useActiveWeb3React()
+  const { balanceFormatStr } = useAccountETHBalance()
 
   return (
     <HeaderFrame>
@@ -185,6 +194,16 @@ export default function Header() {
       <HeaderControls>
         <HeaderElement>
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
+            {account && balanceFormatStr ? (
+              <BalanceText
+                style={{ flexShrink: 0 }}
+                pl="0.75rem"
+                pr="0.5rem"
+                fontWeight={500}
+              >
+                {balanceFormatStr} ETH
+              </BalanceText>
+            ) : null}
             <Web3Status />
           </AccountElement>
         </HeaderElement>
