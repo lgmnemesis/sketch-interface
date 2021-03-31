@@ -1,12 +1,5 @@
 import { getAddress } from '@ethersproject/address'
-
-export enum ChainId {
-  MAINNET = 1,
-  ROPSTEN = 3,
-  RINKEBY = 4,
-  GÖRLI = 5,
-  KOVAN = 42,
-}
+import { ChainId } from '../connectors'
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   1: '',

@@ -7,12 +7,27 @@ import { PortisConnector } from '@web3-react/portis-connector'
 
 const POLLING_INTERVAL = 12000
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL ?? ''
+
+export enum ChainId {
+  MAINNET = 1,
+  ROPSTEN = 3,
+  RINKEBY = 4,
+  GÖRLI = 5,
+  KOVAN = 42,
+}
+
 export const NETWORK_CHAIN_ID: number = parseInt(
-  process.env.REACT_APP_CHAIN_ID ?? '1',
+  process.env.REACT_APP_CHAIN_ID ?? ChainId.MAINNET.toString(),
 )
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42],
+  supportedChainIds: [
+    ChainId.MAINNET,
+    ChainId.ROPSTEN,
+    ChainId.RINKEBY,
+    ChainId.GÖRLI,
+    ChainId.KOVAN,
+  ],
 })
 
 export const network = new NetworkConnector({
