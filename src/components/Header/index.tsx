@@ -216,7 +216,7 @@ export default function Header() {
           </RotateIcon>
         </Title>
         <HeaderLinks>
-          <StyledNavLink id={`tab1-nav-link`} to={'/tab1'}>
+          <StyledNavLink id={`home-nav-link`} to={'/home'}>
             <Activity />
             <SpaceX />
             <HideExtraSmall>Tab_1</HideExtraSmall>
