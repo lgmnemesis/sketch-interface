@@ -17,7 +17,7 @@ export function useAccountETHBalance() {
         setBalance(value)
       }
     }
-  }, [account, library, chainId])
+  }, [account, library])
 
   useEffect(() => {
     library?.on('block', getBalance)
